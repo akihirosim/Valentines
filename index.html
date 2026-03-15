@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulan will you be my Valentine?</title>
+  <style>
+    :root {
+      --max-yes-scale: 2.2;
+      --button-width: 176px;
+      --button-gap: 40px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 24px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #ffe4ec 0%, #fff1f2 45%, #fae8ff 100%);
+    }
+
+    .card {
+      position: relative;
+      width: min(100%, 1280px);
+      min-height: 78vh;
+      overflow: hidden;
+      border-radius: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
+    }
+
+    .floating-icons {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      opacity: 0.6;
+    }
+
+    .floating-icons span {
+      position: absolute;
+      user-select: none;
+    }
+
+    .icon-1 { left: 40px; top: 32px; font-size: 2.25rem; }
+    .icon-2 { right: 48px; top: 48px; font-size: 3rem; }
+    .icon-3 { left: 64px; bottom: 64px; font-size: 2.25rem; }
+    .icon-4 { right: 56px; bottom: 48px; font-size: 3rem; }
+
+    .content {
+      position: relative;
+      z-index: 10;
+      min-height: 78vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .text-wrap {
+      position: relative;
+      z-index: 20;
+      max-width: 900px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #e11d48;
+      font-size: clamp(2.6rem, 6vw, 5.2rem);
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      margin-top: 20px;
+      color: #f43f5e;
+      font-size: clamp(1.1rem, 2.4vw, 1.7rem);
+      font-weight: 600;
+      min-height: 2.2em;
+    }
+
+    button {
+      position: absolute;
+      width: var(--button-width);
+      padding: 16px 20px;
+      border: none;
+      border-radius: 18px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
+      transition: left 100ms linear, top 100ms linear, transform 300ms ease, box-shadow 300ms ease;
+    }
+
+    #yesButton {
+      z-index: 20;
+      background: #f43f5e;
+      box-shadow: 0 18px 38px rgba(244, 63, 94, 0.35);
+    }
+
+    #yesButton:hover {
+      box-shadow: 0 22px 44px rgba(244, 63, 94, 0.42);
+    }
+
+    #noButton {
+      z-index: 30;
+      background: #334155;
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.28);
+    }
+
+    .confetti-layer {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      display: none;
+    }
+
+    .confetti {
+      position: absolute;
+      top: -12%;
+      opacity: 0.95;
+      box-shadow: 0 0 8px rgba(255, 235, 59, 0.4);
+      animation-name: confetti-fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translate3d(0, -12%, 0) rotate(0deg);
+        opacity: 0.85;
+      }
+      100% {
+        transform: translate3d(var(--drift), 120vh, 0) rotate(720deg);
+        opacity: 0.9;
+      }
+    }
+
+    .gif {
+      position: relative;
+      z-index: 20;
+      margin-top: 64px;
+      width: 320px;
+      height: 320px;
+      border-radius: 24px;
+      object-fit: cover;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.2);
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 14px;
+      }
+
+      .card,
+      .content {
+        min-height: 82vh;
+      }
+
+      button {
+        width: 148px;
+        font-size: 1.15rem;
+        padding: 14px 16px;
+      }
+
+      .gif {
+        width: 240px;
+        height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="floating-icons" aria-hidden="true">
+      <span class="icon-1">💘</span>
+      <span class="icon-2">🌹</span>
+      <span class="icon-3">💕</span>
+      <span class="icon-4">✨</span>
+    </div>
+
+    <div class="confetti-layer" id="confettiLayer"></div>
+
+    <div class="content" id="content">
+      <div class="text-wrap">
+        <h1>Bulan will you be my Valentine?</h1>
+        <p class="subtitle" id="subtitle">Pick carefully 💘</p>
+      </div>
+
+      <button id="yesButton" type="button">Yes 💖</button>
+      <button id="noButton" type="button" aria-label="No button">No 🙈</button>
+
+      <img
+        id="celebrationGif"
+        class="gif"
+        src="https://media.giphy.com/media/vvyOEBptWygI7NDT56/giphy.gif"
+        alt="Winking celebration"
+      />
+    </div>
+  </div>
+
+  <script>
+    const MAX_YES_SCALE = 2.2;
+    const BUTTON_WIDTH = 176;
+    const BUTTON_GAP = 40;
+    const lines = [
+      "Pick carefully 💘",
+      "Still no? Try again 😏",
+      "That button is slippery 🏃",
+      "The yes button looks better already 💖",
+      "Nope, you have to catch it first 😄",
+      "The universe is saying yes ✨",
+      "That no button is not loyal 😌",
+      "Every dodge means yes is winning 💞",
+    ];
+
+    const card = document.getElementById("card");
+    const subtitle = document.getElementById("subtitle");
+    const yesButton = document.getElementById("yesButton");
+    const noButton = document.getElementById("noButton");
+    const confettiLayer = document.getElementById("confettiLayer");
+    const celebrationGif = document.getElementById("celebrationGif");
+
+    let noPosition = { x: 0, y: 0 };
+    let yesPosition = { x: 0, y: 0 };
+    let isMounted = false;
+    let yesScale = 1;
+    let accepted = false;
+    let messageIndex = 0;
+    let lastMoveTime = 0;
+    let moveCount = 0;
+
+    function createConfetti() {
+      confettiLayer.innerHTML = "";
+
+      for (let index = 0; index < 110; index += 1) {
+        const piece = document.createElement("span");
+        const size = 4 + Math.random() * 6;
+        const colors = ["#facc15", "#fde047", "#eab308", "#fef08a"];
+
+        piece.className = "confetti";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.width = `${size}px`;
+        piece.style.height = `${size * 1.4}px`;
+        piece.style.borderRadius = index % 3 === 0 ? "50%" : index % 2 === 0 ? "4px" : "0px";
+        piece.style.background = colors[index % colors.length];
+        piece.style.animationDelay = `${Math.random() * 4.5}s`;
+        piece.style.animationDuration = `${5.5 + Math.random() * 3.5}s`;
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        piece.style.setProperty("--drift", `${-40 + Math.random() * 80}px`);
+
+        confettiLayer.appendChild(piece);
+      }
+    }
+
+    function updateSubtitle() {
+      subtitle.textContent = accepted ? "YAY!" : lines[messageIndex];
+    }
+
+    function updateYesButton() {
+      yesButton.style.left = `${yesPosition.x}px`;
+      yesButton.style.top = `${yesPosition.y}px`;
+      yesButton.style.transform = `scale(${yesScale})`;
+    }
+
+    function updateNoButton() {
+      noButton.style.left = `${noPosition.x}px`;
+      noButton.style.top = `${noPosition.y}px`;
+    }
+
+    function placeButtonsInitially() {
+      const cardRect = card.getBoundingClientRect();
+      const noRect = noButton.getBoundingClientRect();
+      const padding = 12;
+      const rowCenterX = cardRect.width / 2;
+
+      const yesX = Math.max(
+        padding,
+        Math.min(
+          cardRect.width - BUTTON_WIDTH * 2 - BUTTON_GAP - padding,
+          rowCenterX - BUTTON_WIDTH - BUTTON_GAP / 2
+        )
+      );
+
+      const noX = Math.max(
+        padding,
+        Math.min(cardRect.width - noRect.width - padding, yesX + BUTTON_WIDTH + BUTTON_GAP)
+      );
+
+      const startY = Math.max(
+        padding,
+        Math.min(cardRect.height - noRect.height - padding, cardRect.height * 0.74)
+      );
+
+      yesPosition = { x: yesX, y: startY };
+      noPosition = { x: noX, y: startY };
+      isMounted = true;
+
+      updateYesButton();
+      updateNoButton();
+    }
+
+    function moveNoButton() {
+      const now = Date.now();
+      if (now - lastMoveTime < 60 || accepted) return;
+      lastMoveTime = now;
+
+      const cardRect = card.getBoundingClientRect();
+      const noRect = noButton.getBoundingClientRect();
+      const padding = 12;
+
+      const minX = padding;
+      const minY = padding;
+      const maxX = Math.max(minX, cardRect.width - noRect.width - padding);
+      const maxY = Math.max(minY, cardRect.height - noRect.height - padding);
+
+      noPosition = {
+        x: Math.random() * (maxX - minX) + minX,
+        y: Math.random() * (maxY - minY) + minY,
+      };
+
+      yesScale = Math.min(yesScale + 0.012, MAX_YES_SCALE);
+      moveCount += 1;
+      if (moveCount % 4 === 0) {
+        messageIndex = (messageIndex + 1) % lines.length;
+      }
+
+      updateNoButton();
+      updateYesButton();
+      updateSubtitle();
+    }
+
+    card.addEventListener("mousemove", (event) => {
+      if (!isMounted || accepted) return;
+
+      const rect = noButton.getBoundingClientRect();
+      const cursorX = event.clientX;
+      const cursorY = event.clientY;
+
+      const closestX = Math.max(rect.left, Math.min(cursorX, rect.right));
+      const closestY = Math.max(rect.top, Math.min(cursorY, rect.bottom));
+      const distance = Math.hypot(cursorX - closestX, cursorY - closestY);
+
+      if (distance < 140) {
+        moveNoButton();
+      }
+    });
+
+    yesButton.addEventListener("click", () => {
+      accepted = true;
+      updateSubtitle();
+      yesButton.style.display = "none";
+      noButton.style.display = "none";
+      confettiLayer.style.display = "block";
+      celebrationGif.style.display = "block";
+      createConfetti();
+    });
+
+    window.addEventListener("resize", placeButtonsInitially);
+    window.addEventListener("load", () => {
+      updateSubtitle();
+      placeButtonsInitially();
+    });
+  </script>
+</body>
+</html>
